@@ -1,4 +1,5 @@
-import _jobs from '../data/jobs.json';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 type Job = {
 	id: number;
@@ -10,16 +11,24 @@ type Job = {
 	todo: string;
 };
 
-const jobs: Job[] = _jobs as any[];
+const url = 'http://localhost:3009/jobs';
 
 export const PageJobs = () => {
+	const [jobs, setJobs] = useState<Job[]>([]);
+
+	useEffect(() => {
+		(async () => {
+			setJobs((await axios.get(url)).data);
+		})();
+	}, []);
+
 	return (
 		<div className="pageJobs">
 			<div className="jobs">
 				<h2>There are {jobs.length} jobs:</h2>
 				{jobs.map((job: Job) => {
 					return (
-						<div className="job">
+						<div className="job" key={job.id}>
 							<div className="title">
 								<a href={job.url} target="_blank">
 									{job.title}
